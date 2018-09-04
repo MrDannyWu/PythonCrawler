@@ -1,3 +1,8 @@
+'''
+author：DannyWu
+site:   www.idannywu.com
+'''
+
 #!/usr/bin/env python
 # coding=utf-8
 import requests
