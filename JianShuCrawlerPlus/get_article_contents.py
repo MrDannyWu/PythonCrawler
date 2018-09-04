@@ -13,6 +13,7 @@ import io
 import os
 from pathlib import Path
 import time
+from docx.oxml.ns import qn
 
 header = {
         'cookie':'signin_redirect=https%3A%2F%2Fwww.jianshu.com%2Fp%2F041e2cc55c9a; read_mode=day; default_font=font2; locale=zh-CN; _m7e_session=670535ca128f5635bdfe0c7aa3a733e3; sajssdk_2015_cross_new_user=1; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22165a321cb494f4-0c060c4e81d0a5-3f3c5501-1310720-165a321cb4a5c6%22%2C%22%24device_id%22%3A%22165a321cb494f4-0c060c4e81d0a5-3f3c5501-1310720-165a321cb4a5c6%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_referrer%22%3A%22%22%2C%22%24latest_referrer_host%22%3A%22%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%7D%7D; Hm_lvt_0c0e9d9b1e7d617b3e6842e85b9fb068=1536040226; Hm_lpvt_0c0e9d9b1e7d617b3e6842e85b9fb068=1536040226',
@@ -28,6 +29,8 @@ def get_article_content(url):
     contents = soup.select('.show-content-free *')
     #print(contents)
     doc = Document()
+    doc.styles['Normal'].font.name = 'Times New Roman'
+    doc.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'微软雅黑')
     doc.add_heading(title,0)
     for content in contents:
         #print("###",content)
