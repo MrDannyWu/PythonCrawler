@@ -15,19 +15,19 @@ from get_article_contents import get_article_content
 url = 'https://www.jianshu.com'
 
 def get_one_page_article(one_page_url):
-    #do = webdriver.ChromeOptions()
-    #do.add_argument(r'user-data-dir=C:\Users\DannyWu\AppData\Local\Google\Chrome\User Data')
-   # browser = webdriver.Chrome("chromedriver", 0, do)
-    browser = webdriver.Chrome()
+    do = webdriver.ChromeOptions()
+    do.add_argument(r'user-data-dir=C:\Users\DannyWu\AppData\Local\Google\Chrome\User Data')
+    browser = webdriver.Chrome("chromedriver", 0, do)
+    #browser = webdriver.Chrome()
     browser.get(one_page_url)
-    articles = []
+    #articles = []
     for i in range(4):
         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
         time.sleep(2)    
-    for j in range(2):  
+    for j in range(20):  
         try:
             button = browser.execute_script("var a = document.getElementsByClassName('load-more'); a[0].click();")
-            time.sleep(2)
+            #time.sleep(2)
         except:
             pass
 
