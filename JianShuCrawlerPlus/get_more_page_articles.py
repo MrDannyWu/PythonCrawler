@@ -27,7 +27,7 @@ def get_one_page_article(one_page_url):
     for j in range(20):  
         try:
             button = browser.execute_script("var a = document.getElementsByClassName('load-more'); a[0].click();")
-            #time.sleep(2)
+            time.sleep(2)
         except:
             pass
 
