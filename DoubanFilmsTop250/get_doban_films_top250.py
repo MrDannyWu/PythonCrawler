@@ -17,7 +17,7 @@ def get_more_pages(page_url):
 
 def get_details(url,header):
     current_path = os.getcwd();
-    folder_path = current_path + "\\douban1"
+    folder_path = current_path + "\\douban"
     path = Path(folder_path)
     web_data = requests.get(url,headers = header)
     soup = BeautifulSoup(web_data.text, 'lxml')
