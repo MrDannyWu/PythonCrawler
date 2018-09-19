@@ -112,8 +112,8 @@ if __name__ == '__main__':
 #    print("                     |       其他商业用途，谢谢！       |")
 #    print("                     |       如若侵权，联系立删！       |")
 #    print("                     |----------------------------------|")
-    #page_num = int(input('请输入下载的页数：'))
-    #pool_num = int(input('请输入启动进程数: '))
+    page_num = int(input('请输入下载的页数：'))
+    pool_num = int(input('请输入启动进程数: '))
     #print(type(page_num))
     #print(type(pool_num))
     start_tip = "                                美图下载器开始运行...           "
@@ -128,8 +128,8 @@ if __name__ == '__main__':
         start = "################第 {} 页开始################"
         end = "################第 {} 页结束################"
         #for i in range(page_num):
-        pool_num = 10
-        for i in range(0,1):    
+        #pool_num = 10
+        for i in range(page_num):    
             print(start.format(i+1))
             doc.add_paragraph(start.format(i+1))
             url = base_url.format(i+1)
