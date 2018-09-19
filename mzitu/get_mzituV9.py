@@ -18,7 +18,7 @@ def get_header(referer):
         }
     return header
 
-def get_pics_for_one(url):
+def get_pic_page_for_one_group(url):
     header = get_header(url)
     #browser = webdriver.Chrome()
     current_folder_path = os.getcwd()
@@ -81,7 +81,7 @@ def download_pics(pic_page_url):
         pass
 
 
-def get_pics_for_one_pages(url,header,pool_num):
+def download_pics_for_one_page(url,header,pool_num):
     try:
         web_data = requests.get(url,headers=header).text
         soup = BeautifulSoup(web_data,'lxml')
