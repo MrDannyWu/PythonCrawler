@@ -28,6 +28,9 @@ def fanyi(url,input_text):
         print('None')
 if __name__ == '__main__':
     url = 'http://fanyi.youdao.com/'
+    print('          #############################################')
+    print('          #      Welcome to DannyWu translation!      #')
+    print('          #############################################')
     input_text = input('请输入要翻译的句子：')
     #print(input_text)
     result = fanyi(url,input_text)
