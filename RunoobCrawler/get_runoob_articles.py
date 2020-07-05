@@ -36,7 +36,8 @@ def get_article_content(url,header):
     #print(res.text)
     soup = BeautifulSoup(res.text,'lxml')
     #print(soup)
-    title = soup.select('.article-intro h1')[0].text
+    #title = soup.select('.article-intro h1')[0].text
+    title = soup.select('head title')[0].text.split(' | ')[0]
     print(title)
     contents = soup.select('.article-intro *')
     #print(contents)
@@ -45,7 +46,7 @@ def get_article_content(url,header):
     doc.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'微软雅黑')
     doc.add_heading(title,0)
     for content in contents:
-        print("######",content)
+        #print("######",content)
         #print("###",content)
         if "img" in str(content):
             img_link = content.get('src')
@@ -57,14 +58,17 @@ def get_article_content(url,header):
                 try:
                     if 'http' in img_link:
                         img = requests.get(img_link )
-                    else:
+                    elif '//' in img_link:
                         img = requests.get('http:' + img_link )
+                    else:
+                        img = requests.get('http://www.runoob.com' + img_link )
+
                 except:
                     pass
                 if (img_link[-4:-3] == '.'):
-                    file_name = "temp" + img_link[-10:]
+                    file_name = "temp" + img_link[-5:]
                 else:
-                    file_name = "temp" + img_link[-10:] + ".jpg"
+                    file_name = "temp" + img_link[-5:] + ".jpg"
                 file_path = Path(file_name)
                 with open(file_name,'wb') as w:
                     w.write(img.content)
@@ -112,5 +116,5 @@ def get_article_url(index_url,header):
 
 #get_article_content('http://www.runoob.com/python3/python3-basic-syntax11.html',header)
 #get_article_url('http://www.runoob.com/python3/python3-basic-syntax.html',header)
-get_article_content('http://www.runoob.com/python3/python3-install.html',header)
+get_article_content('https://www.runoob.com/js/js-intro.html',header)
 

@@ -11,7 +11,7 @@ from multiprocessing import Pool
 
 def get_header(referer):
     header ={
-        'cookie':'Hm_lvt_dbc355aef238b6c32b43eacbbf161c3c=1536981553; Hm_lpvt_dbc355aef238b6c32b43eacbbf161c3c=1536986863',
+        # 'cookie':'Hm_lvt_dbc355aef238b6c32b43eacbbf161c3c=1536981553; Hm_lpvt_dbc355aef238b6c32b43eacbbf161c3c=1536986863',
         'referer': referer,
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36'
         }
@@ -50,7 +50,12 @@ def get_pics_for_one(url):
 
 def download_pics(pic_page_url):
 
-    header = get_header(pic_page_url)
+    header = {
+
+
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
+
+    }
     try:
         page_data = requests.get(pic_page_url,headers=header)
         soup_data = BeautifulSoup(page_data.text,'lxml')
@@ -80,10 +85,15 @@ def download_pics(pic_page_url):
         pass
 
 
-def get_pics_for_one_pages(url,header,pool_num):
+def get_pics_for_one_pages(url,pool_num):
+    header = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
+    }
+    print(url)
     try:
-        web_data = requests.get(url,headers=header).text
+        web_data = requests.get(url, headers=header).text
         soup = BeautifulSoup(web_data,'lxml')
+        print(soup)
         pages_url = soup.select('#pins li span a')
         for page_url in pages_url:
             print('===============开始下载：',page_url.text+"==============")
@@ -95,8 +105,9 @@ def get_pics_for_one_pages(url,header,pool_num):
             pool.join()
             print("======================下载完成======================")
             print("")
-    except:
-        pass
+    except Exception as e:
+        print('111111111111', e)
+
 
 
 if __name__ == '__main__':
@@ -118,7 +129,8 @@ if __name__ == '__main__':
     #print(type(pool_num))
     start_tip = "                                美图下载器开始运行...           "
     print(start_tip)
-    header = get_header("referer")
+    header = get_header("https://www.mzitu.com")
+    print(header)
     try:
 
         base_url = 'http://www.mzitu.com/page/{}/'
@@ -128,7 +140,8 @@ if __name__ == '__main__':
         for i in range(page_num_start,page_num_end):    
             print(start.format(i+1))
             url = base_url.format(i+1)
-            get_pics_for_one_pages(url,header,pool_num)
+            print(url)
+            get_pics_for_one_pages(url,pool_num)
             print(end.format(i+1))
 
     except:
