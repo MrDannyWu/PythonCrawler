@@ -1,6 +1,6 @@
 import scrapy
 import json
-from tian_tian_found_spider.items import TianTianFoundSpiderItem
+from tian_tian_found_spider.items import FoundJingZhiSpiderItem
 
 
 class FundJingZhiSpiderSpider(scrapy.Spider):
@@ -15,6 +15,9 @@ class FundJingZhiSpiderSpider(scrapy.Spider):
             'DNT': '1',
             'Host': 'fund.eastmoney.com',
             'Referer': 'http://fund.eastmoney.com',
+        },
+        'ITEM_PIPELINES': {
+            'tian_tian_found_spider.pipelines.FoundJingZhiSpiderPipeline': 300,
         }
     }
     name = 'fund_jing_zhi_spider'
@@ -30,7 +33,7 @@ class FundJingZhiSpiderSpider(scrapy.Spider):
         json_data = json.loads(response.text.split('datas:')[1].split(',count:')[0], encoding='utf-8')
         print(json_data)
         for i in json_data:
-            item = TianTianFoundSpiderItem()
+            item = FoundJingZhiSpiderItem()
             data = {}
             for j, k in zip(i, range(50)):
                 data['field{}'.format(k)] = j

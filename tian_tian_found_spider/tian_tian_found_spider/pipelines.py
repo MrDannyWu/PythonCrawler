@@ -8,6 +8,16 @@
 from itemadapter import ItemAdapter
 
 
-class TianTianFoundSpiderPipeline:
+class FoundGuZhiSpiderPipeline:
     def process_item(self, item, spider):
+        gu_zhi = item['gu_zhi']
+        data = {}
+        for i in gu_zhi:
+            print(i)
+
+        return item
+
+class FoundJingZhiSpiderPipeline:
+    def process_item(self, item, spider):
+        # print(item['gu_zhi'])
         return item
