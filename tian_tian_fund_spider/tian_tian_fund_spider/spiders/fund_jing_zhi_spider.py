@@ -1,6 +1,6 @@
 import scrapy
 import json
-from tian_tian_found_spider.items import FoundJingZhiSpiderItem
+from tian_tian_fund_spider.items import FundJingZhiSpiderItem
 
 
 class FundJingZhiSpiderSpider(scrapy.Spider):
@@ -17,7 +17,7 @@ class FundJingZhiSpiderSpider(scrapy.Spider):
             'Referer': 'http://fund.eastmoney.com',
         },
         'ITEM_PIPELINES': {
-            'tian_tian_found_spider.pipelines.FoundJingZhiSpiderPipeline': 300,
+            'tian_tian_fund_spider.pipelines.FundJingZhiSpiderPipeline': 300,
         }
     }
     name = 'fund_jing_zhi_spider'
@@ -25,17 +25,21 @@ class FundJingZhiSpiderSpider(scrapy.Spider):
     start_urls = ['http://fund.eastmoney.com/Data/Fund_JJJZ_Data.aspx?t=1&lx=1&letter=&gsid=&text=&sort=zdf,desc&page={},200&dt=1596373971516&atfc=&onlySale=0'.format(i) for i in range(1, 47)]
 
     def parse(self, response):
+        item = FundJingZhiSpiderItem()
         # print(response.text)
         # tr_list = response.xpath('//tbody[@id="tableContent"]/tr')
         # for i in tr_list:
         #     print(i)
         # print(response.text.split('datas:')[1].split(',count:')[0])
         json_data = json.loads(response.text.split('datas:')[1].split(',count:')[0], encoding='utf-8')
-        print(json_data)
-        for i in json_data:
-            item = FoundJingZhiSpiderItem()
-            data = {}
-            for j, k in zip(i, range(50)):
-                data['field{}'.format(k)] = j
-            item = data
-            yield item
+        show_day = json.loads(response.text.split('showday:')[1].replace(']}', ']'), encoding='utf-8')
+        # print(json_data)
+        # for i in json_data:
+        #     item = FundJingZhiSpiderItem()
+        #     data = {}
+        #     for j, k in zip(i, range(50)):
+        #         data['field{}'.format(k)] = j
+        #     item = data
+        item['jing_zhi'] = json_data
+        item['show_day'] = show_day
+        yield item

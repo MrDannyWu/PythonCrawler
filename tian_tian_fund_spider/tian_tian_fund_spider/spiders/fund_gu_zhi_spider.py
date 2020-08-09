@@ -1,6 +1,6 @@
 import scrapy
 import json
-from tian_tian_found_spider.items import FoundGuZhiSpiderItem
+from tian_tian_fund_spider.items import FundGuZhiSpiderItem
 
 
 class FundGuZhiSpiderSpider(scrapy.Spider):
@@ -9,7 +9,7 @@ class FundGuZhiSpiderSpider(scrapy.Spider):
     """
     custom_settings = {
         'ITEM_PIPELINES': {
-            'tian_tian_found_spider.pipelines.FoundGuZhiSpiderPipeline': 300,
+            'tian_tian_fund_spider.pipelines.FundGuZhiSpiderPipeline': 300,
         }
     }
     name = 'fund_gu_zhi_spider'
@@ -23,11 +23,11 @@ class FundGuZhiSpiderSpider(scrapy.Spider):
         # tr_list = response.xpath('//tbody[@id="tableContent"]/tr')
         # for i in tr_list:
         #     print(i)
-        item = FoundGuZhiSpiderItem()
-        print(response.text.replace('({', '{').replace('})', '}'))
+        item = FundGuZhiSpiderItem()
+        # print(response.text.replace('({', '{').replace('})', '}'))
         json_data = json.loads('{' + response.text.split('({')[1].replace('})', '}'), encoding='utf-8')['Data']['list']
         # for i in json_data:
-        #     item = TianTianFoundSpiderItem()
+        #     item = TianTianFundSpiderItem()
         #     item = i
         item['gu_zhi'] = json_data
         yield item

@@ -6,16 +6,16 @@
 import scrapy
 
 
-class FoundGuZhiSpiderItem(scrapy.Item):
+class FundGuZhiSpiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
 
     gu_zhi = scrapy.Field()
 
 
-class FoundJingZhiSpiderItem(scrapy.Item):
+class FundJingZhiSpiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
 
-    # gu_zhi = scrapy.Field()
-    pass
+    jing_zhi = scrapy.Field()
+    show_day = scrapy.Field()

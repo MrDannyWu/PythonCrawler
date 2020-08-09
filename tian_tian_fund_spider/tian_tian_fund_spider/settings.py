@@ -1,4 +1,4 @@
-# Scrapy settings for tian_tian_found_spider project
+# Scrapy settings for tian_tian_fund_spider project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -8,13 +8,13 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import random
 
-BOT_NAME = 'tian_tian_found_spider'
+BOT_NAME = 'tian_tian_fund_spider'
 
-SPIDER_MODULES = ['tian_tian_found_spider.spiders']
-NEWSPIDER_MODULE = 'tian_tian_found_spider.spiders'
+SPIDER_MODULES = ['tian_tian_fund_spider.spiders']
+NEWSPIDER_MODULE = 'tian_tian_fund_spider.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'tian_tian_found_spider (+http://www.yourdomain.com)'
+# USER_AGENT = 'tian_tian_fund_spider (+http://www.yourdomain.com)'
 USER_AGENT_LIST = [
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
@@ -301,13 +301,13 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    'tian_tian_found_spider.middlewares.TianTianFoundSpiderSpiderMiddleware': 543,
+#    'tian_tian_fund_spider.middlewares.TianTianFundSpiderSpiderMiddleware': 543,
 # }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 # DOWNLOADER_MIDDLEWARES = {
-#    'tian_tian_found_spider.middlewares.TianTianFoundSpiderDownloaderMiddleware': 543,
+#    'tian_tian_fund_spider.middlewares.TianTianFundSpiderDownloaderMiddleware': 543,
 # }
 
 # Enable or disable extensions
@@ -319,7 +319,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'tian_tian_found_spider.pipelines.TianTianFoundSpiderPipeline': 300,
+   'tian_tian_fund_spider.pipelines.TianTianFundSpiderPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
