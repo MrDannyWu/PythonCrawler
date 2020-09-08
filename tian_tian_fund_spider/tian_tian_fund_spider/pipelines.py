@@ -14,7 +14,7 @@ class FundGuZhiSpiderPipeline:
 
     def __init__(self):
         self.es_hosts = {
-            "192.168.31.116": 9200
+            "127.0.0.1": 9200
         }
         self.es = Elasticsearch(hosts=self.es_hosts)
         # self.body = {
@@ -113,7 +113,7 @@ class FundGuZhiSpiderPipeline:
 class FundJingZhiSpiderPipeline:
     def __init__(self):
         self.es_hosts = {
-            "192.168.31.116": 9200
+            "127.0.0.1": 9200
         }
         self.es = Elasticsearch(hosts=self.es_hosts)
 
