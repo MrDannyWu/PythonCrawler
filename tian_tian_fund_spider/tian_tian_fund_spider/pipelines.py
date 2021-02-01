@@ -8,15 +8,18 @@
 from itemadapter import ItemAdapter
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
+import datetime
+from tian_tian_fund_spider.settings import ES_HOST, ES_PORT
 
 
 class FundGuZhiSpiderPipeline:
 
     def __init__(self):
         self.es_hosts = {
-            "127.0.0.1": 9200
+            ES_HOST: ES_PORT
         }
         self.es = Elasticsearch(hosts=self.es_hosts)
+        self.date_today = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
         # self.body = {
         #     "query": {
         #         "match": {
@@ -37,6 +40,8 @@ class FundGuZhiSpiderPipeline:
                 data['bzdm'] = int(data['bzdm'])
             else:
                 data['bzdm'] = -200
+
+            data['_id'] = str(data['bzdm']) + '_' + self.date_today
             #
             if data['FScaleType'] != '' and data['FScaleType'] != '---':
                 data['FScaleType'] = int(data['FScaleType'])
@@ -113,9 +118,10 @@ class FundGuZhiSpiderPipeline:
 class FundJingZhiSpiderPipeline:
     def __init__(self):
         self.es_hosts = {
-            "127.0.0.1": 9200
+            ES_HOST: ES_PORT
         }
         self.es = Elasticsearch(hosts=self.es_hosts)
+        self.date_today = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
 
     def process_item(self, item, spider):
         # print(item['gu_zhi'])
@@ -184,6 +190,7 @@ class FundJingZhiSpiderPipeline:
                 # print(i)
                 # print(len(i))
             data['_index'] = 'tian_tian_fund_jing_zhi'
+            data['_id'] = str(data['fund_code']) + '_' + self.date_today
             data['show_day'] = show_day
             data['date1'] = show_day[0]
             data['date2'] = show_day[1]

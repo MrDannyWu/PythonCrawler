@@ -8,6 +8,9 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import random
 
+ES_HOST = '127.0.0.1'
+ES_PORT = 9200
+
 BOT_NAME = 'tian_tian_fund_spider'
 
 SPIDER_MODULES = ['tian_tian_fund_spider.spiders']
