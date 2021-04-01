@@ -24,7 +24,7 @@ post_data = {
 }
 
 resp = requests.post(url, data=post_data)
-json_data = json.loads(resp.text, encoding='utf-8')
+json_data = json.loads(resp.text)
 print(json_data)
 for i in json_data:
     print(i, ' --> ', json_data[i])
