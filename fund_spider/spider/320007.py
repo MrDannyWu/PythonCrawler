@@ -40,7 +40,7 @@ for item in history_data:
 
 columns = ['priceDate', 'priceDate1', 'netValue', 'totalNetValue', 'changeRate', 'performanceIndex']
 
-file_path = 'files/320007.xlsx'
+file_path = '../files/320007.xlsx'
 
 print(len(data_list), len(count), len(data_list) - len(count))
 df = pd.DataFrame(data_list, columns=columns)
