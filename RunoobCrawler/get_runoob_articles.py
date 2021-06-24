@@ -13,7 +13,7 @@ header = {
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36'
         }
 
-def get_article_content(article_url,header):
+def get_article_content1(article_url,header):
     web_data = requests.get(article_url,headers=header)
     status_code = web_data.status_code
     if status_code == 200:
