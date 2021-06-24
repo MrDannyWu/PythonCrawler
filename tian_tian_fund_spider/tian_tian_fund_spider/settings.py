@@ -8,6 +8,14 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import random
 
+# MYSQL
+DB_HOST = '127.0.0.1'
+DB_PORT = 3306
+DB_USER = 'root'
+DB_PASS = '123456'
+DB_NAME = 'tian_tian_fund_spider'
+
+# ES
 ES_HOST = '127.0.0.1'
 ES_PORT = 9200
 
