@@ -13,7 +13,7 @@ DB_HOST = '127.0.0.1'
 DB_PORT = 3306
 DB_USER = 'root'
 DB_PASS = '123456'
-DB_NAME = 'tian_tian_fund_spider'
+DB_NAME = 'tian_tian_fund'
 
 # ES
 ES_HOST = '127.0.0.1'

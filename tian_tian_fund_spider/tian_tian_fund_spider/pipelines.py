@@ -3,18 +3,21 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
-
+from hahaha_utils.mysql_client import MySQLClient
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 import datetime
-from tian_tian_fund_spider.settings import ES_HOST, ES_PORT
+from tian_tian_fund_spider.settings import ES_HOST, ES_PORT, DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME
 
 
 class FundGuZhiSpiderPipeline:
 
     def __init__(self):
+
+        self.mc = MySQLClient(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT)
+        self.guzhi_insert_sql = 'INSERT INTO `tian_tian_fund_gu_zhi`{} VALUES{} ON DUPLICATE KEY UPDATE {}'
         self.es_hosts = {
             ES_HOST: ES_PORT
         }
@@ -29,13 +32,47 @@ class FundGuZhiSpiderPipeline:
         # }
         # result = self.es.search(body=self.body, index='users')
 
+    def get_lower_case_name(self, text):
+        lst = []
+        if text.isupper():
+            return text.lower()
+        else:
+            for index, char in enumerate(text):
+                if char.isupper() and index != 0:
+                    lst.append("_")
+                lst.append(char)
+
+            return "".join(lst).lower()
+
     def process_item(self, item, spider):
         gu_zhi = item['gu_zhi']
+        # save to ES
         data_list = []
+        # save to mysql
+        data_list_1 = []
         for data in gu_zhi:
+            key_list = []
+            value_list = []
+            sql_text = ''
+            for i in data:
+                new_key = self.get_lower_case_name(i)
+                key_list.append(new_key)
+                value = data[i]
+                try:
+                    if value[-1] == '%':
+                        value = value[:-1]
+                except:
+                    pass
+                value_list.append(value)
+                sql_text = sql_text + new_key + ' = VALUES(' + new_key + '),'
+            key_list.append('key')
+            value_list.append(data['bzdm'] + '_' + data['gxrq'])
+            # print('KKKKKKKKKKKKKK', key_list, '\n', value_list, '\n', sql_text)
             # print(i)
             data['_index'] = 'tian_tian_fund_gu_zhi'
-
+            insert_mysql_sql = self.guzhi_insert_sql.format(str(tuple(key_list)).replace("'", '`'), tuple(value_list), sql_text[:-1])
+            # print('sqllllllllllllllllllll', insert_mysql_sql.replace('None', 'NULL'))
+            self.mc.insert_one(insert_mysql_sql.replace('None', 'NULL'))
             if data['bzdm'] != '' and data['bzdm'] != '---':
                 data['bzdm'] = int(data['bzdm'])
             else:
@@ -194,7 +231,7 @@ class FundJingZhiSpiderPipeline:
             data['show_day'] = show_day
             data['date1'] = show_day[0]
             data['date2'] = show_day[1]
-            print(data)
+            # print(data)
             data_list.append(data)
         helpers.bulk(self.es, actions=data_list)
 

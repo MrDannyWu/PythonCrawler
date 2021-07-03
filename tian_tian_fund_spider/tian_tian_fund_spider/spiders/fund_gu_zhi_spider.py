@@ -16,7 +16,7 @@ class FundGuZhiSpiderSpider(scrapy.Spider):
     allowed_domains = ['fund.eastmoney.com']
     start_urls = [
         'http://api.fund.eastmoney.com/FundGuZhi/GetFundGZList?type=1&sort=3&orderType=desc&canbuy=0&pageIndex={}&pageSize=200&callback=jQuery183019877059102314365_1596370479764&_=1596370517255'.format(
-            i) for i in range(1, 47)]
+            i) for i in range(1, 48)]
 
     def parse(self, response):
         # print(response.text)
