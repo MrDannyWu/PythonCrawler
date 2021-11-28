@@ -22,24 +22,17 @@ class FundJingZhiSpiderSpider(scrapy.Spider):
     }
     name = 'fund_jing_zhi_spider'
     allowed_domains = ['fund.eastmoney.com']
-    start_urls = ['http://fund.eastmoney.com/Data/Fund_JJJZ_Data.aspx?t=1&lx=1&letter=&gsid=&text=&sort=zdf,desc&page={},200&dt=1596373971516&atfc=&onlySale=0'.format(i) for i in range(1, 47)]
+    start_urls = ['http://fund.eastmoney.com/Data/Fund_JJJZ_Data.aspx?t=1&lx=1&letter=&gsid=&text=&sort=zdf,desc&page={},200&dt=1596373971516&atfc=&onlySale=0'.format(i) for i in range(1, 100)]
+    # start_urls = ['http://fund.eastmoney.com/Data/Fund_JJJZ_Data.aspx?t=1&lx=1&letter=&gsid=&text=&sort=zdf,desc&page={},200&dt=1596373971516&atfc=&onlySale=0'.format(i) for i in range(1)]
 
     def parse(self, response):
+
         item = FundJingZhiSpiderItem()
-        # print(response.text)
-        # tr_list = response.xpath('//tbody[@id="tableContent"]/tr')
-        # for i in tr_list:
-        #     print(i)
-        # print(response.text.split('datas:')[1].split(',count:')[0])
+
         json_data = json.loads(response.text.split('datas:')[1].split(',count:')[0], encoding='utf-8')
         show_day = json.loads(response.text.split('showday:')[1].replace(']}', ']'), encoding='utf-8')
-        # print(json_data)
-        # for i in json_data:
-        #     item = FundJingZhiSpiderItem()
-        #     data = {}
-        #     for j, k in zip(i, range(50)):
-        #         data['field{}'.format(k)] = j
-        #     item = data
+
         item['jing_zhi'] = json_data
         item['show_day'] = show_day
+
         yield item

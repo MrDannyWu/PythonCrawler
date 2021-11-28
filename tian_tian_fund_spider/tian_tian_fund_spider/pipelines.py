@@ -17,11 +17,11 @@ class FundGuZhiSpiderPipeline:
     def __init__(self):
 
         self.mc = MySQLClient(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT)
-        self.guzhi_insert_sql = 'INSERT INTO `tian_tian_fund_gu_zhi`{} VALUES{} ON DUPLICATE KEY UPDATE {}'
-        self.es_hosts = {
-            ES_HOST: ES_PORT
-        }
-        self.es = Elasticsearch(hosts=self.es_hosts)
+        self.guzhi_insert_sql = 'INSERT INTO `fund_gu_zhi`{} VALUES{} ON DUPLICATE KEY UPDATE {}'
+        # self.es_hosts = {
+        #     ES_HOST: ES_PORT
+        # }
+        # self.es = Elasticsearch(hosts=self.es_hosts)
         self.date_today = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
         # self.body = {
         #     "query": {
@@ -73,166 +73,125 @@ class FundGuZhiSpiderPipeline:
             insert_mysql_sql = self.guzhi_insert_sql.format(str(tuple(key_list)).replace("'", '`'), tuple(value_list), sql_text[:-1])
             # print('sqllllllllllllllllllll', insert_mysql_sql.replace('None', 'NULL'))
             self.mc.insert_one(insert_mysql_sql.replace('None', 'NULL'))
-            if data['bzdm'] != '' and data['bzdm'] != '---':
-                data['bzdm'] = int(data['bzdm'])
-            else:
-                data['bzdm'] = -200
 
-            data['_id'] = str(data['bzdm']) + '_' + self.date_today
-            #
-            if data['FScaleType'] != '' and data['FScaleType'] != '---':
-                data['FScaleType'] = int(data['FScaleType'])
-            else:
-                data['FScaleType'] = -200
-            #
-            if data['JJGSID'] != '' and data['JJGSID'] != '---':
-                data['JJGSID'] = int(data['JJGSID'])
-            else:
-                data['JJGSID'] = -200
-            #
-            if data['IsExchg'] != '' and data['IsExchg'] != '---':
-                data['IsExchg'] = int(data['IsExchg'])
-            else:
-                data['IsExchg'] = -200
-            #
-            if data['Rate'] != '' and data['Rate'] != '---':
-                data['Rate'] = float(data['Rate'].replace('%', ''))
-            else:
-                data['Rate'] = -200.0
-            #
-            if data['fundtype'] != '' and data['fundtype'] != '---':
-                data['fundtype'] = int(data['fundtype'])
-            else:
-                data['fundtype'] = -200
-
-            if data['IsListTrade'] != '' and data['IsListTrade'] != '---':
-                data['IsListTrade'] = int(data['IsListTrade'])
-            else:
-                data['IsListTrade'] = -200
-
-            if data['isbuy'] != '' and data['isbuy'] != '---':
-                data['isbuy'] = int(data['isbuy'])
-            else:
-                data['isbuy'] = -200
-
-            if data['gspc'] != '' and data['gspc'] != '---':
-                data['gspc'] = float(data['gspc'].replace('%', ''))
-            else:
-                data['gspc'] = -200.0
-
-            if data['gsz'] != '' and data['gsz'] != '---':
-                data['gsz'] = float(data['gsz'])
-            else:
-                data['gsz'] = -200.0
-
-            if data['gszzl'] != '' and data['gszzl'] != '---':
-                data['gszzl'] = float(data['gszzl'].replace('%', ''))
-            else:
-                data['gszzl'] = -200.0
-
-            if data['jzzzl'] != '' and data['jzzzl'] != '---':
-                data['jzzzl'] = float(data['jzzzl'].replace('%', ''))
-            else:
-                data['jzzzl'] = -200.0
-
-            if data['dwjz'] != '' and data['dwjz'] != '---':
-                data['dwjz'] = float(data['dwjz'].replace('%', ''))
-            else:
-                data['dwjz'] = -200.0
-
-            if data['gbdwjz'] != '' and data['gbdwjz'] != '---':
-                data['gbdwjz'] = float(data['gbdwjz'])
-            else:
-                data['gbdwjz'] = -200.0
-
-            data_list.append(data)
-
-        helpers.bulk(self.es, actions=data_list)
-
-        # return item
 
 
 class FundJingZhiSpiderPipeline:
     def __init__(self):
-        self.es_hosts = {
-            ES_HOST: ES_PORT
-        }
-        self.es = Elasticsearch(hosts=self.es_hosts)
+        self.mc = MySQLClient(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT)
+        self.jing_zhi_insert_sql = 'INSERT INTO `fund_jing_zhi`(`fund_code`, `fund_name`, `fund_name_pin_yin`, `dwjz`, `ljjz`, `dwjz_day_before`, `ljjz_day_before`, `daily_growth_value`, `daily_growth_rate`, `busy_status`, `sale_status`, `handling_fee`, `jz_date`, `jz_date_day_before`, `table_key`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE fund_code=VALUES(fund_code), fund_name=VALUES(fund_name), fund_name_pin_yin=VALUES(fund_name_pin_yin), dwjz=VALUES(dwjz), ljjz=VALUES(ljjz), dwjz_day_before=VALUES(dwjz_day_before), ljjz_day_before=VALUES(ljjz_day_before), daily_growth_value=VALUES(daily_growth_value), daily_growth_rate=VALUES(daily_growth_rate), busy_status=VALUES(busy_status), sale_status=VALUES(sale_status), handling_fee=VALUES(handling_fee), jz_date=VALUES(jz_date), jz_date_day_before=VALUES(jz_date_day_before), table_key=VALUES(table_key)'
         self.date_today = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
 
     def process_item(self, item, spider):
-        # print(item['gu_zhi'])
         gu_zhi = item['jing_zhi']
         show_day = item['show_day']
         data_list = []
-        key_list = ['fund_code', 'fund_name', 'fund_name_en', 'dwjz1', 'ljjz1', 'dwjz2', 'ljjz2', 'day_value', 'day_rate', 'buy_status', 'sale_status',
-                    'field1', 'field2', 'field3', 'field4', 'field5', 'field6', 'field7', 'field8', 'field9', 'handling_fee', ]
+        jz_date = show_day[0]
+        jz_date_day_before = show_day[1]
 
-        for i in gu_zhi:
-            data = {}
-            for m, n in zip(key_list, i):
-                # if m == 'fund_code':
-                #     n = int(n)
-                # if m == 'dwjz1':
-                #     n = float(n)
-                # if m == 'ljjz1':
-                #     n = float(n)
-                # if m == 'dwjz2':
-                #     n = float(n)
-                # if m == 'ljjz2':
-                #     n = float(n)
+        for data in gu_zhi:
 
-                data[m] = n
+            try:
+                fund_code = data[0]
+                if fund_code == '' or fund_code == '---':
+                    fund_code = ''
+            except:
+                fund_code = ''
 
-            if data['fund_code'] != '':
-                data['fund_code'] = int(data['fund_code'])
-            else:
-                data['fund_code'] = -200
+            try:
+                fund_name = data[1]
+                if fund_name == '' or fund_name == '---':
+                    fund_name = ''
+            except:
+                fund_name = ''
 
-            if data['dwjz1'] != '':
-                data['dwjz1'] = float(data['dwjz1'])
-            else:
-                data['dwjz1'] = -200.0
+            try:
+                fund_name_pin_yin = data[2]
+                if fund_name_pin_yin == '' or fund_name_pin_yin == '---':
+                    fund_name_pin_yin = ''
+            except:
+                fund_name_pin_yin = ''
 
-            if data['ljjz1'] != '':
-                data['ljjz1'] = float(data['ljjz1'])
-            else:
-                data['ljjz1'] = -200.0
+            try:
+                dwjz = float(data[3])
+                if dwjz == '' or dwjz == '---':
+                    dwjz = -999.0000
+            except:
+                dwjz = -999.0000
 
-            if data['dwjz2'] != '':
-                data['dwjz2'] = float(data['dwjz2'])
-            else:
-                data['dwjz2'] = -200.0
+            try:
+                ljjz = float(data[4])
+                if ljjz == '' or ljjz == '---':
+                    ljjz = -999.0000
+            except:
+                ljjz = -999.0000
 
-            if data['ljjz2'] != '':
-                data['ljjz2'] = float(data['ljjz2'])
-            else:
-                data['ljjz2'] = -200.0
+            try:
+                dwjz_day_before = float(data[5])
+                if dwjz_day_before == '' or dwjz_day_before == '---':
+                    dwjz_day_before = -999.0000
+            except:
+                dwjz_day_before = -999.0000
 
-            if data['day_value'] != '':
-                data['day_value'] = float(data['day_value'])
-            else:
-                data['day_value'] = -200.0
+            try:
+                ljjz_day_before = float(data[6])
+                if ljjz_day_before == '' or ljjz_day_before == '---':
+                    ljjz_day_before = -999.0000
+            except:
+                ljjz_day_before = -999.0000
 
-            if data['day_rate'] != '':
-                data['day_rate'] = float(data['day_rate'])
-            else:
-                data['day_rate'] = -200.0
+            try:
+                daily_growth_value = float(data[7])
+                if daily_growth_value == '' or daily_growth_value == '---':
+                    daily_growth_value = -999.0000
+            except:
+                daily_growth_value = -999.0000
 
-            if data['handling_fee'] != '':
-                data['handling_fee'] = float(data['handling_fee'].replace('%', ''))
-            else:
-                data['handling_fee'] = -200.0
+            try:
+                daily_growth_rate = float(data[8])
+                if daily_growth_rate == '' or daily_growth_rate == '---':
+                    daily_growth_rate = -999.0000
+            except:
+                daily_growth_rate = -999.0000
 
-                # print(i)
-                # print(len(i))
-            data['_index'] = 'tian_tian_fund_jing_zhi'
-            data['_id'] = str(data['fund_code']) + '_' + self.date_today
-            data['show_day'] = show_day
-            data['date1'] = show_day[0]
-            data['date2'] = show_day[1]
-            # print(data)
-            data_list.append(data)
-        helpers.bulk(self.es, actions=data_list)
+            try:
+                busy_status = data[9]
+                if busy_status == '' or busy_status == '---':
+                    busy_status = ''
+            except:
+                busy_status = ''
 
-        # return item
+            try:
+                sale_status = data[10]
+                if sale_status == '' or sale_status == '---':
+                    sale_status = ''
+            except:
+                sale_status = ''
+
+            try:
+                handling_fee = float(data[20].replace('%', ''))
+                if handling_fee == '' or handling_fee == '---':
+                    handling_fee = -999.0000
+            except:
+                handling_fee = -999.0000
+
+            table_key = '{}_{}'.format(data[0], jz_date)
+
+            data_list.append((
+                fund_code,
+                fund_name,
+                fund_name_pin_yin,
+                dwjz,
+                ljjz,
+                dwjz_day_before,
+                ljjz_day_before,
+                daily_growth_value,
+                daily_growth_rate,
+                busy_status,
+                sale_status,
+                handling_fee,
+                jz_date,
+                jz_date_day_before,
+                table_key))
+        self.mc.insert_many(self.jing_zhi_insert_sql, tuple(data_list))
+
