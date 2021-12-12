@@ -19,3 +19,10 @@ class FundJingZhiSpiderItem(scrapy.Item):
 
     jing_zhi = scrapy.Field()
     show_day = scrapy.Field()
+
+
+class FundJingZhiHistorySpiderItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+
+    jing_zhi = scrapy.Field()

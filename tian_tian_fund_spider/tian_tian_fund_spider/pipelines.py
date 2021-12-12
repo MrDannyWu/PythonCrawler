@@ -67,19 +67,17 @@ class FundGuZhiSpiderPipeline:
                 sql_text = sql_text + new_key + ' = VALUES(' + new_key + '),'
             key_list.append('key')
             value_list.append(data['bzdm'] + '_' + data['gxrq'])
-            # print('KKKKKKKKKKKKKK', key_list, '\n', value_list, '\n', sql_text)
-            # print(i)
             data['_index'] = 'tian_tian_fund_gu_zhi'
             insert_mysql_sql = self.guzhi_insert_sql.format(str(tuple(key_list)).replace("'", '`'), tuple(value_list), sql_text[:-1])
-            # print('sqllllllllllllllllllll', insert_mysql_sql.replace('None', 'NULL'))
             self.mc.insert_one(insert_mysql_sql.replace('None', 'NULL'))
 
 
 
 class FundJingZhiSpiderPipeline:
+
     def __init__(self):
         self.mc = MySQLClient(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT)
-        self.jing_zhi_insert_sql = 'INSERT INTO `fund_jing_zhi`(`fund_code`, `fund_name`, `fund_name_pin_yin`, `dwjz`, `ljjz`, `dwjz_day_before`, `ljjz_day_before`, `daily_growth_value`, `daily_growth_rate`, `busy_status`, `sale_status`, `handling_fee`, `jz_date`, `jz_date_day_before`, `table_key`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE fund_code=VALUES(fund_code), fund_name=VALUES(fund_name), fund_name_pin_yin=VALUES(fund_name_pin_yin), dwjz=VALUES(dwjz), ljjz=VALUES(ljjz), dwjz_day_before=VALUES(dwjz_day_before), ljjz_day_before=VALUES(ljjz_day_before), daily_growth_value=VALUES(daily_growth_value), daily_growth_rate=VALUES(daily_growth_rate), busy_status=VALUES(busy_status), sale_status=VALUES(sale_status), handling_fee=VALUES(handling_fee), jz_date=VALUES(jz_date), jz_date_day_before=VALUES(jz_date_day_before), table_key=VALUES(table_key)'
+        self.jing_zhi_insert_sql = 'INSERT INTO `fund_jing_zhi`(`fund_code`, `fund_name`, `fund_name_pin_yin`, `dwjz`, `ljjz`, `dwjz_day_before`, `ljjz_day_before`, `daily_growth_value`, `daily_growth_rate`, `buy_status`, `sale_status`, `handling_fee`, `jz_date`, `jz_date_day_before`, `table_key`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE fund_code=VALUES(fund_code), fund_name=VALUES(fund_name), fund_name_pin_yin=VALUES(fund_name_pin_yin), dwjz=VALUES(dwjz), ljjz=VALUES(ljjz), dwjz_day_before=VALUES(dwjz_day_before), ljjz_day_before=VALUES(ljjz_day_before), daily_growth_value=VALUES(daily_growth_value), daily_growth_rate=VALUES(daily_growth_rate), buy_status=VALUES(buy_status), sale_status=VALUES(sale_status), handling_fee=VALUES(handling_fee), jz_date=VALUES(jz_date), jz_date_day_before=VALUES(jz_date_day_before), table_key=VALUES(table_key)'
         self.date_today = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
 
     def process_item(self, item, spider):
@@ -155,11 +153,11 @@ class FundJingZhiSpiderPipeline:
                 daily_growth_rate = -999.0000
 
             try:
-                busy_status = data[9]
-                if busy_status == '' or busy_status == '---':
-                    busy_status = ''
+                buy_status = data[9]
+                if buy_status == '' or buy_status == '---':
+                    buy_status = ''
             except:
-                busy_status = ''
+                buy_status = ''
 
             try:
                 sale_status = data[10]
@@ -187,7 +185,7 @@ class FundJingZhiSpiderPipeline:
                 ljjz_day_before,
                 daily_growth_value,
                 daily_growth_rate,
-                busy_status,
+                buy_status,
                 sale_status,
                 handling_fee,
                 jz_date,
@@ -195,3 +193,14 @@ class FundJingZhiSpiderPipeline:
                 table_key))
         self.mc.insert_many(self.jing_zhi_insert_sql, tuple(data_list))
 
+
+
+class FundJingZhiHistroySpiderPipeline:
+
+    def __init__(self):
+        self.mc = MySQLClient(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT)
+        self.jing_zhi_insert_sql = 'INSERT INTO `fund_jing_zhi_history`(`fund_code`, `fund_name`, `fund_name_pin_yin`, `dwjz`, `ljjz`, `dwjz_day_before`, `ljjz_day_before`, `daily_growth_value`, `daily_growth_rate`, `buy_status`, `sale_status`, `handling_fee`, `jz_date`, `jz_date_day_before`, `table_key`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE fund_code=VALUES(fund_code), fund_name=VALUES(fund_name), fund_name_pin_yin=VALUES(fund_name_pin_yin), dwjz=VALUES(dwjz), ljjz=VALUES(ljjz), dwjz_day_before=VALUES(dwjz_day_before), ljjz_day_before=VALUES(ljjz_day_before), daily_growth_value=VALUES(daily_growth_value), daily_growth_rate=VALUES(daily_growth_rate), buy_status=VALUES(buy_status), sale_status=VALUES(sale_status), handling_fee=VALUES(handling_fee), jz_date=VALUES(jz_date), jz_date_day_before=VALUES(jz_date_day_before), table_key=VALUES(table_key)'
+
+    def process_item(self, item, spider):
+        data_list = item['jing_zhi']
+        self.mc.insert_many(self.jing_zhi_insert_sql, tuple(data_list))
